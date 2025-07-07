@@ -64,3 +64,16 @@ footer {
 .links a:hover {
   color: #ffffff;
 }
+
+.vw-image-container {
+  margin-top: 20px;
+}
+
+.vw-image {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  border: 2px solid #ff4444;
+  border-radius: 10px;
+}
+
