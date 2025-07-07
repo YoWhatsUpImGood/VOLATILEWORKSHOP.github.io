@@ -1,0 +1,57 @@
+/* Reset some basics */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #0b0b0b;
+  color: #ff4c4c;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+header {
+  background-color: #1a1a1a;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 2px solid #ff4c4c;
+}
+
+header h1 {
+  margin-bottom: 10px;
+  font-size: 2.5rem;
+}
+
+nav a {
+  color: #ff4c4c;
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  color: #fff;
+}
+
+main {
+  padding: 40px;
+  max-width: 800px;
+  margin: auto;
+}
+
+section h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ff4c4c;
+  padding-bottom: 5px;
+}
+
+footer {
+  background-color: #1a1a1a;
+  text-align: center;
+  padding: 15px;
+  margin-top: 40px;
+  border-top: 2px solid #ff4c4c;
+}
