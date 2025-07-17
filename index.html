@@ -1,46 +1,545 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Volatile Workshop</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOLATILE WORKSHOP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  
-  <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
-  <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon-96x96.png" />
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-  <link rel="manifest" href="assets/site.webmanifest" />
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/web-app-manifest-192x192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/web-app-manifest-512x512.png" />
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0000 0%, #000000 50%, #1a0000 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background-image: 
+                radial-gradient(circle at 20% 20%, #ff0000 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, #ff0000 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 2px solid #ff0000;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #ff0000, transparent);
+            transition: left 0.5s ease;
+        }
+
+        nav a:hover::before {
+            left: 100%;
+        }
+
+        nav a:hover {
+            background: rgba(255, 0, 0, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .page {
+            display: none;
+            padding: 8rem 0 4rem;
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff0000, #cc0000, #ff3333);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
+            to { text-shadow: 0 0 40px rgba(255, 0, 0, 0.8); }
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: #cccccc;
+            margin-bottom: 2rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #999999;
+            margin-bottom: 3rem;
+        }
+
+        .section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.2);
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #ff0000;
+            text-align: center;
+        }
+
+        .section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #ff3333;
+        }
+
+        .section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #cccccc;
+            margin-bottom: 1rem;
+        }
+
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .link-card {
+            background: rgba(255, 0, 0, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .link-card:hover {
+            background: rgba(255, 0, 0, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.3);
+        }
+
+        .link-card h3 {
+            color: #ff0000;
+            margin-bottom: 1rem;
+        }
+
+        .link-card a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .link-card a:hover {
+            background: linear-gradient(45deg, #cc0000, #ff0000);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .project-card:hover::before {
+            left: 100%;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(255, 0, 0, 0.3);
+            border-color: #ff0000;
+        }
+
+        .project-card h3 {
+            color: #ff0000;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .project-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+            border: 1px solid #00ff00;
+        }
+
+        .status-development {
+            background: rgba(255, 255, 0, 0.2);
+            color: #ffff00;
+            border: 1px solid #ffff00;
+        }
+
+        .status-completed {
+            background: rgba(0, 150, 255, 0.2);
+            color: #0096ff;
+            border: 1px solid #0096ff;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            right: 2rem;
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            z-index: 1001;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu {
+                display: block;
+            }
+
+            nav ul {
+                flex-direction: column;
+                position: fixed;
+                top: 4rem;
+                right: -100%;
+                background: rgba(0, 0, 0, 0.95);
+                width: 100%;
+                height: 100vh;
+                padding: 2rem;
+                transition: right 0.3s ease;
+            }
+
+            nav ul.active {
+                right: 0;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            .section {
+                margin: 2rem 0;
+                padding: 1.5rem;
+            }
+
+            .link-grid, .project-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #ff0000;
+            border-radius: 50%;
+            animation: float 6s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
- <header>
-  <h1>Welcome to the Volatile Workshop</h1>
-  <a href="links.html" class="button">Go to Our Links</a>
-</header>
+    <div class="bg-pattern"></div>
+    <div class="particles" id="particles"></div>
+    
+    <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
+    
+    <nav>
+        <ul id="navMenu">
+            <li><a href="#" onclick="showPage('home')">Home</a></li>
+            <li><a href="#" onclick="showPage('links')">Links</a></li>
+            <li><a href="#" onclick="showPage('projects')">Projects</a></li>
+        </ul>
+    </nav>
 
-  <main>
-    <section class="info">
-      <p>This page is a work in progress!</p>
-      <p>Join our discord below</p>
-      
-<div class="vw-image-container">
-  <img src="assets/VW.PNG" alt="VW Logo" class="vw-image" />
-</div>
+    <div class="container">
+        <!-- HOME PAGE -->
+        <div id="home" class="page active">
+            <div class="hero">
+                <h1 class="logo">VOLATILE WORKSHOP</h1>
+                <p class="tagline">Modding the Darkness</p>
+                <p class="subtitle">Dying Light 1 & 2 Modification Community</p>
+            </div>
+            
+            <div class="section">
+                <h2>Welcome to the Workshop</h2>
+                <p>Step into the world of VOLATILE WORKSHOP, where darkness meets creativity. We are a passionate community of modders dedicated to enhancing your Dying Light experience with cutting-edge modifications that push the boundaries of what's possible.</p>
+                
+                <p>Our team specializes in creating immersive mods for both Dying Light 1 and Dying Light 2, ranging from gameplay overhauls to visual enhancements that will transform your zombie survival experience. Whether you're looking for more challenging infected encounters, new weapons, or complete game mechanics revamps, we've got you covered.</p>
+                
+                <p>Join our Discord community to stay updated on the latest releases, participate in beta testing, and connect with fellow survivors who share your passion for modding excellence.</p>
+            </div>
 
-    </section>
-  </main>
+            <div class="section">
+                <h3>What We Do</h3>
+                <p>Our workshop focuses on creating high-quality modifications that enhance gameplay while maintaining the core atmosphere that makes Dying Light special. From subtle quality-of-life improvements to major overhauls, every mod is crafted with attention to detail and tested thoroughly by our community.</p>
+                
+                <p>We believe in collaborative development and welcome feedback from our community. Many of our most successful mods have been shaped by suggestions and testing from players like you.</p>
+            </div>
+        </div>
 
-  <footer>
-    <div class="links">
-      <a href="#"></a>
-      <a href="#">https://discord.gg/VvwBWBGYcD</a>
-      <a href="#"></a>
-      
+        <!-- LINKS PAGE -->
+        <div id="links" class="page">
+            <div class="section">
+                <h2>Community Links</h2>
+                <p>Connect with us across various platforms and stay updated on our latest releases:</p>
+                
+                <div class="link-grid">
+                    <div class="link-card">
+                        <h3>Discord Server</h3>
+                        <p>Join our active community for real-time discussions, support, and exclusive previews of upcoming mods.</p>
+                        <a href="#" target="_blank">Join Discord</a>
+                    </div>
+                    
+                    <div class="link-card">
+                        <h3>Nexus Mods</h3>
+                        <p>Download our latest mods, leave reviews, and browse our complete collection of Dying Light modifications.</p>
+                        <a href="#" target="_blank">Visit Nexus</a>
+                    </div>
+                    
+                    <div class="link-card">
+                        <h3>GitHub</h3>
+                        <p>Access our open-source projects, report bugs, and contribute to the development of our mods.</p>
+                        <a href="#" target="_blank">View GitHub</a>
+                    </div>
+                    
+                    <div class="link-card">
+                        <h3>YouTube</h3>
+                        <p>Watch mod showcases, tutorials, and behind-the-scenes content from our development process.</p>
+                        <a href="#" target="_blank">Subscribe</a>
+                    </div>
+                    
+                    <div class="link-card">
+                        <h3>Twitter</h3>
+                        <p>Follow us for quick updates, announcements, and community highlights.</p>
+                        <a href="#" target="_blank">Follow @VolatileWorkshop</a>
+                    </div>
+                    
+                    <div class="link-card">
+                        <h3>Reddit</h3>
+                        <p>Join discussions on our subreddit and connect with the broader Dying Light modding community.</p>
+                        <a href="#" target="_blank">Visit Subreddit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJECTS PAGE -->
+        <div id="projects" class="page">
+            <div class="section">
+                <h2>Our Projects</h2>
+                <p>Explore our collection of mods and ongoing projects:</p>
+                
+                <div class="project-grid">
+                    <div class="project-card">
+                        <h3>VOLATILE Mod Manager</h3>
+                        <div class="project-status status-development">In Development</div>
+                        <p>A comprehensive mod management tool designed specifically for Dying Light 1 & 2. Features easy installation, automatic updates, mod conflict detection, and profile management for seamless modding experience.</p>
+                        <p><strong>Supports:</strong> Dying Light 1 & 2</p>
+                        <p><strong>Features:</strong> One-click installation, backup system, mod profiles, conflict resolution</p>
+                    </div>
+                    
+                    <div class="project-card">
+                        <h3>Future Projects</h3>
+                        <div class="project-status status-development">Planning</div>
+                        <p>We're constantly working on new ideas and improvements. Our mod manager is just the beginning - stay tuned for exciting gameplay mods and enhancements coming soon!</p>
+                        <p><strong>Coming Soon:</strong> Gameplay overhauls, visual enhancements, and quality-of-life improvements</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <p>© 2025 Volatile Workshop</p>
-  </footer>
+
+    <script>
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Close mobile menu if open
+            document.getElementById('navMenu').classList.remove('active');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
+
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 6 + 's';
+            particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            document.getElementById('particles').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 8000);
+        }
+
+        // Generate particles periodically
+        setInterval(createParticle, 300);
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const nav = document.getElementById('navMenu');
+            const menuButton = document.querySelector('.mobile-menu');
+            
+            if (!nav.contains(e.target) && !menuButton.contains(e.target)) {
+                nav.classList.remove('active');
+            }
+        });
+
+        // Smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
 </body>
 </html>
